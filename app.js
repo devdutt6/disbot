@@ -2,6 +2,8 @@ const { Client, Collection, Events, GatewayIntentBits } = require('discord.js');
 const fs = require('node:fs');
 const path = require('node:path');
 const { token } = require('./config.json');
+const { slashCommandHandeler } = require('./handelers/slashCommand');
+const { modalSubmissionHandeler } = require('./handelers/modalSubmit');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMembers ]});
 
@@ -20,19 +22,21 @@ client.once(Events.ClientReady, () => {
 	console.log('Ready!');
 });
 
+// slash command handeler
 client.on(Events.InteractionCreate, async interaction => {
-	if (!interaction.isChatInputCommand()) return;
-
-	const command = client.commands.get(interaction.commandName);
-
-	if (!command) return;
-
-	try {
-		await command.execute(interaction);
-	} catch (error) {
-		console.error(error);
-		await interaction.reply({ content: 'There was an error while executing this command!', ephemeral: true });
+	let res;
+	if( interaction.isChatInputCommand() ){
+		res = await slashCommandHandeler(client, interaction);
 	}
+	else if( interaction.isModalSubmit() ){
+		res = await modalSubmissionHandeler(interaction);
+	}
+	else{
+		return;
+	}
+
+	if(res.status) return;
+	return interaction.reply({  content: 'There was an error while executing this command!', ephemeral: true  });
 });
 
 client.login(token);
