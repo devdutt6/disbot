@@ -1,4 +1,4 @@
-const { SlashCommandBuilder } = require("discord.js");
+const { SlashCommandBuilder, userMention } = require("discord.js");
 
 module.exports = {
   data: new SlashCommandBuilder()
@@ -8,15 +8,16 @@ module.exports = {
       option
         .setName('type')
         .setDescription('Kind of break you are taking')
+        .setRequired(true)
         .addChoices(
           {name: 'Lunch', value: 'lunch'},
           {name: 'Short', value: 'short'}
         )
     ),
   async execute(interaction) {
-    console.log({interaction});
     let type = interaction.options.getString('type');
+    let user = userMention(interaction.user.id);
 
-    interaction.reply(`Devdutt took a ${type} break`);
+    interaction.reply(`${user} took a ${type} break`);
   }
 }
