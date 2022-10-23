@@ -4,6 +4,7 @@ const path = require('node:path');
 const { token } = require('./config.json');
 const { slashCommandHandeler } = require('./handelers/slashCommand');
 const { modalSubmissionHandeler } = require('./handelers/modalSubmit');
+const { taskHandeler } = require('./handelers/taskHandeler');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMembers ]});
 
@@ -21,12 +22,20 @@ for (const file of commandFiles) {
 client.once(Events.ClientReady, () => {
 	console.log('Ready!');
 });
+// creating DB like env
+let tasklist = {};
 
 // slash command handeler
 client.on(Events.InteractionCreate, async interaction => {
 	let res;
 	if( interaction.isChatInputCommand() ){
-		res = await slashCommandHandeler(client, interaction);
+		if( interaction.commandName === 'task' ){
+			res = await taskHandeler( tasklist, interaction );
+			if(res.status) tasklist = res.taskList;
+		}
+		else{
+			res = await slashCommandHandeler(client, interaction);
+		}
 	}
 	else if( interaction.isModalSubmit() ){
 		res = await modalSubmissionHandeler(interaction);
