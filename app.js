@@ -1,10 +1,10 @@
 const { Client, Collection, Events, GatewayIntentBits } = require('discord.js');
+const mongoose = require('mongoose');
 const fs = require('node:fs');
 const path = require('node:path');
 const { token } = require('./config.json');
 const { slashCommandHandeler } = require('./handelers/slashCommand');
 const { modalSubmissionHandeler } = require('./handelers/modalSubmit');
-const { taskHandeler } = require('./handelers/taskHandeler');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMembers ]});
 
@@ -19,23 +19,21 @@ for (const file of commandFiles) {
 	client.commands.set(command.data.name, command);
 }
 
+// mongoose connection
+let conn_string = 'mongodb://localhost:27017/discord';
+mongoose.connect(conn_string)
+.then(() => console.log("Database Connected"))
+.catch((err) => console.error(err));
+
 client.once(Events.ClientReady, () => {
 	console.log('Ready!');
 });
-// creating DB like env
-let tasklist = {};
 
 // slash command handeler
 client.on(Events.InteractionCreate, async interaction => {
 	let res;
 	if( interaction.isChatInputCommand() ){
-		if( interaction.commandName === 'task' ){
-			res = await taskHandeler( tasklist, interaction );
-			if(res.status) tasklist = res.taskList;
-		}
-		else{
-			res = await slashCommandHandeler(client, interaction);
-		}
+		res = await slashCommandHandeler(client, interaction);
 	}
 	else if( interaction.isModalSubmit() ){
 		res = await modalSubmissionHandeler(interaction);
