@@ -51,4 +51,15 @@ let editTasks = async ( date, userId, tasks ) => {
   }
 };
 
-module.exports = { Task, addTask, editTasks };
+let getTasks = async ( date, userId ) => {
+  try{
+    let tasks = await Task.findOne({ userId, date }).lean();
+
+    return { status: true, tasks: tasks.tasks };
+  }
+  catch(err){
+    console.error(err);
+    return { status: false, error: err };
+  }
+}
+module.exports = { Task, addTask, editTasks, getTasks };

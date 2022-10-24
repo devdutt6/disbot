@@ -4,7 +4,7 @@ const { getDate } = require('../utils/createDate');
 
 module.exports = {
   data: new SlashCommandBuilder()
-    .setName('task')
+    .setName('addtask')
     .setDescription('Add a task you finished today')
     .addStringOption(option =>
       option
