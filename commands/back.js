@@ -7,6 +7,6 @@ module.exports = {
   async execute(interaction) {
     let user = userMention(interaction.user.id);
 
-    interaction.reply({ content: `${user}'s back from a break` });
+    interaction.reply({ content: `${user} is back from a break` });
   }
 }

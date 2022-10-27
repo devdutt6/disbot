@@ -62,4 +62,5 @@ let getTasks = async ( date, userId ) => {
     return { status: false, error: err };
   }
 }
+
 module.exports = { Task, addTask, editTasks, getTasks };
