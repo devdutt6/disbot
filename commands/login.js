@@ -9,6 +9,7 @@ module.exports = {
       option
         .setName('projects')
         .setDescription('List of projects that you will work on for today')
+        .setRequired(true)
     ),
     async execute(interaction) {
       const time = DateTime.now();

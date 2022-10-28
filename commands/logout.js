@@ -9,6 +9,7 @@ module.exports = {
       option
         .setName('projects')
         .setDescription('List of projects that you worked on today')
+        .setRequired(true)
     ),
     async execute(interaction) {
       let boldlogout = bold("Logout Time:  ");

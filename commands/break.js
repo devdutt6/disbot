@@ -10,8 +10,8 @@ module.exports = {
         .setDescription('Kind of break you are taking')
         .setRequired(true)
         .addChoices(
-          {name: 'Lunch', value: 'lunch'},
-          {name: 'Short', value: 'short'}
+          {name: 'lunch', value: 'lunch'},
+          {name: 'short', value: 'short'}
         )
     ),
   async execute(interaction) {
