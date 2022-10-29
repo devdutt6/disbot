@@ -5,18 +5,24 @@ let RemainderSchema = new mongoose.Schema({
     type: String
   },
   date: {
-    type: String
+    type: Number
   },
   description: {
     type: String
+  },
+  guildId: {
+    type: String
+  },
+  channelId: {
+    type: String
   }
-}, { timestamps: true, collection: 'Remainders', versionKey: false });
+}, { timestamps: true, collection: 'remainders', versionKey: false });
 
-let Remainder = new mongoose.model( 'Remainder', RemainderSchema );
+const Remainder = new mongoose.model( 'Remainder', RemainderSchema );
 
-let createRemainder = async ( userId, date, description ) => {
+let createRemainder = async ( userId, date, description, guildId, channelId ) => {
   try{
-    await Remainder.create({userId, date, description});
+    await Remainder.create({userId, date, description, guildId, channelId});
 
     return { status: true };
   }

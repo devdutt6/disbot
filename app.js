@@ -1,10 +1,15 @@
-const { Client, Collection, Events, GatewayIntentBits } = require('discord.js');
+const { Client, Collection, Events, GatewayIntentBits, userMention, bold } = require('discord.js');
 const mongoose = require('mongoose');
 const fs = require('node:fs');
 const path = require('node:path');
+const cron = require('node-cron');
 const { token } = require('./config.json');
 const { slashCommandHandeler } = require('./handelers/slashCommand');
 const { modalSubmissionHandeler } = require('./handelers/modalSubmit');
+// const { remainderScript } = require('./utils/remainderScript');
+const { Remainder } = require('./modules/reminder');
+const { DateTime } = require('luxon');
+// const { userMention, bold } = require('discord.js');
 
 const client = new Client({ intents: [GatewayIntentBits.Guilds, GatewayIntentBits.MessageContent, GatewayIntentBits.GuildMessages, GatewayIntentBits.GuildMembers ]});
 
@@ -28,6 +33,30 @@ mongoose.connect(conn_string)
 client.once(Events.ClientReady, () => {
 	console.log('Ready!');
 });
+
+cron.schedule( '* * * * *', async () => {
+	try{
+		let current_time = DateTime.now();
+
+		let remainders = await Remainder.find({ date: {
+			$lt: current_time.ts
+		} }).lean();
+		console.log(`got ${remainders.length} to send`);
+		for( let i=0;i<remainders.length;i++){
+			let channel = await client.channels.fetch(remainders[i].channelId);
+			await channel.send(`Remainder for ${userMention(remainders[i].userId)}\n${bold('description: ')}${remainders[i].description}`);
+		}
+
+		await Remainder.deleteMany({ date: {
+			$lt: current_time.ts
+		} });
+		return;
+	}
+	catch(err){
+		console.error(err);
+		return;
+	}
+} ); // every minute check and send remainder
 
 // slash command handeler
 client.on(Events.InteractionCreate, async interaction => {

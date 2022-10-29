@@ -33,7 +33,7 @@ exports.specificModalHandeler = async (interaction) => {
   let specificdatetime = DateTime.fromFormat(date_string, 'dd-MM-yyyy HH:mm');
 
 
-  let resp = await createRemainder(interaction.user.id, specificdatetime.ts, description);
+  let resp = await createRemainder(interaction.user.id, specificdatetime.ts, description, interaction.guildId, interaction.channelId);
 
   if(resp.status) {
     interaction.reply({ content: 'Remainder scheduled\nhttps://tenor.com/view/done-so-done-im-done-monkey-throw-gif-18638117', ephemeral: true });

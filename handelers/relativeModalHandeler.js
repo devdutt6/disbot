@@ -7,7 +7,7 @@ exports.relativeModalHandeler = async (interaction) => {
   let minute_row = interaction.fields.getTextInputValue('minute');
 
   let date = DateTime.now().plus({ hours: hour_row, minute: minute_row });
-  let resp = await createRemainder( interaction.user.id, date.ts, description );
+  let resp = await createRemainder( interaction.user.id, date.ts, description, interaction.guildId, interaction.channelId );
 
   if(resp.status) {
     interaction.reply({ content: 'Remainder scheduled\nhttps://tenor.com/view/done-so-done-im-done-monkey-throw-gif-18638117', ephemeral: true });
