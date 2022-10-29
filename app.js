@@ -43,8 +43,11 @@ cron.schedule( '* * * * *', async () => {
 		} }).lean();
 		console.log(`got ${remainders.length} to send`);
 		for( let i=0;i<remainders.length;i++){
-			let channel = await client.channels.fetch(remainders[i].channelId);
-			await channel.send(`Remainder for ${userMention(remainders[i].userId)}\n${bold('description: ')}${remainders[i].description}`);
+			// ?if want in channel
+			// let channel = await client.channels.fetch(remainders[i].channelId);
+			// await channel.send(`Remainder for ${userMention(remainders[i].userId)}\n${bold('description: ')}${remainders[i].description}`);
+			// ? personal DM
+			await client.users.send(remainders[i].userId, `A Remainder:\n> ${remainders[i].description}`);
 		}
 
 		await Remainder.deleteMany({ date: {
